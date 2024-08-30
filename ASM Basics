@@ -41,3 +41,6 @@ ADD ESP,4 ; ADD 4 TO ESP - ADJUST THE TOP OF THE STACK
 CALL instuction :
 Subroutines are implemented by using the CALL and RET instruction pair 
 The CALL instruction pushes the current instruction pointer EIP to the stack to jump to the funtion address specified . whenever the function executes the RET instruction , the last element is poped from the stack , and the CPU jumps to the address
+
+it's important to know that every compiler will produce slightly different output . 
+therefore , the same source code compiled with different compilers may produce different machine codes
