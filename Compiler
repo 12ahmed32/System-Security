@@ -1,0 +1,49 @@
+The compiler is similar to the assemnbler . it converts high-level source coed such as c into low-level code or directly into object file 
+therefore , one the output file is created , the prevoius process will be executed on the file . The end result is an executable file 
+source code -> compiler -> assembly code -> assembler -> object file -> linker -> executable file
+--------------------------------------------------
+1. Source Code
+What: This is the human-readable code written in a high-level programming language (e.g., C, C++, Python).
+Example:
+c
+Copy code
+int main() {
+    return 0;
+}
+2. Compiler
+What: The compiler translates the source code into assembly language, a lower-level language that is closer to machine code.
+Output: Assembly code.
+Example: The compiler takes the C code above and generates assembly instructions.
+Tools: gcc, clang, g++, etc.
+3. Assembly Code
+What: This is a low-level representation of the program, which is specific to the architecture (e.g., x86, ARM).
+Example:
+assembly
+Copy code
+.section .text
+.globl _start
+_start:
+    mov $0, %eax
+    ret
+Why: Assembly code is human-readable but directly maps to machine instructions.
+4. Assembler
+What: The assembler converts the assembly code into machine code, creating an object file. This machine code is not yet a complete program, as it still needs to be linked with libraries and other modules.
+Output: Object file (e.g., .o file).
+Tools: as, nasm, masm.
+5. Object File
+What: The object file contains machine code and data but is not a complete program. It may have unresolved references to functions or variables that will be resolved during the linking phase.
+Why: This file is an intermediate stage in the process of creating an executable.
+Example: main.o
+6. Linker
+What: The linker takes one or more object files and combines them, resolving references between them (e.g., function calls, variable accesses). It also links in any necessary libraries (e.g., the C standard library) to produce a complete executable.
+Output: Executable file (e.g., .exe, .out).
+Tools: ld, gcc (invokes linker automatically after compiling).
+7. Executable File
+What: This is the final product, containing machine code that can be executed directly by the CPU. It has all necessary code and data linked together.
+Example: a.out on Unix-like systems, main.exe on Windows.
+Summary:
+Source Code (high-level language) ➔
+Compiler ➔ Assembly Code (low-level language) ➔
+Assembler ➔ Object File (machine code) ➔
+Linker ➔ Executable File (ready to run).
+Each step in this process transforms the code, gradually moving from a human-readable form to a binary form that the CPU can execute directly.
