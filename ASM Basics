@@ -44,3 +44,11 @@ The CALL instruction pushes the current instruction pointer EIP to the stack to 
 
 it's important to know that every compiler will produce slightly different output . 
 therefore , the same source code compiled with different compilers may produce different machine codes
+! a debugger is a program wich runs other programs , in a way that we can exercise control over thee program itself . in our specific case , the debugger will help us to write exploits , analyze programs , reverse engineer binaries ans much more 
+as we will see , the debuggerr allows us to :
+stop the program while it is running
+anaylze the stack and its data
+inspect registers
+change the program or program variables and more
+
+ 
