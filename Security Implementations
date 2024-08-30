@@ -1,0 +1,25 @@
+Overview of the security implemnetation that have been developed during the past several years to prevent , or impede , the exploitation of vulnerabilites such as Buffer Overflow : 
+1.Address Space Layout Randomization (ASLR)
+2.Data Execution Prevention (DEP)
+3.Stack Cookies (Canary)
+----------------------------------------------------------------------
+1.Address Space Layout Randomization 
+The goal of the ASLR is to introduce rendomness for executables , libraries , and satcks in the memory address space 
+This makes it more difficult for an attacker to predict memory addresses and caueses exploits to fail and crash the process
+When ASLR is activated , the OS loads the same executable at different locations in memroy every time
+It's important to note that ASLR is not enabled for all modules 
+This means that , even if a process has ASLR enabled , there could be a DLL in the address space without this protection which could make the process vulnerable to the ASLR bypass attack
+to verify status of ASLR on different programs ,, use the Process Exploror : https://learn.microsoft.com/en-us/sysinternals/downloads/process-explorer
+Windows provides another tool that helps solve the problem of exploitation , the Enhanced Migtigation Experience Toolkit (EMET) :
+it provides users witrh the abiility to depoloy security mitigation technologies to all applications
+-----------------------------------------------------------------------------
+2.DEP 
+prevents execution of code from pages inmemory that are not explicitly marked as executable . The code injected into the memeory can't be run from that region
+this makes buffer overflow exploitations even harder
+------------------------------------------------------------------------------
+3.Stack Cookies
+Thhe Canary is a security implementation that places a value next to the return address on the stack
+The function prologue loads a value into this location , while the epilogue makes sure that the value is intact.
+as a result , when the epilogue runs , it checks that the value is still there and that it is correct
+if it is not , a buffer overflow has probably taken place
+this because a buffer overflow usually overwrites data in the stack 
