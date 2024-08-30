@@ -1,0 +1,43 @@
+High-level functions sucuh as strcpy() are made of multiple ASM instructiuons put togeether to perfrom the given operation (copy 2 strings)
+most instructions have 2 operands and fall into one of the following calsses :
+1.Data Transfer : MOV , XCHG , PUSH , POP
+2.Arithmetic : ADD ,SUB , MUL , XOR , NOT
+3.Control Flow : CALL , RET , LOOP , JCC (where cc is any condition)
+4.Other : STI , CLI , IN , OUT
+---------------------------------------------------------------
+The following is an example of a simple assembly code that sums 2 numbers :
+MOV EAX,2
+MOV EBX,5
+ADD EAX,EBX ; do EAX = EAX + EBX operation
+---------------------------------------------------------------
+ASM deals directly with the registers and memory locations and there are certain rules for each assembly language
+For example , each opcode is represented in one line and conmteins the instruction (ex:MOV,ADD,etc) and the operands used by the opcode . the number of operands may vary depending on the instruction
+Intel vs AT&T :
+more importantely , depending on the architectrual syntax , instructions and rules may vary for example 
+the source and the destination operandsd may be in different positions :
+-----------------------------------------------------------------
+intel (windows)                                         AT&T(Linux)
+-----------------------------------------------------------------
+ASSEMBLY : MOV EAX , 8                                  MOVL $8,%EAX
+                                                   |
+SYNTAX :  <instruction><destination><source>       |   <instruction><source><destination>                                  
+------------------------------------------------------------------
+AT&T -> puts a % before registers names and a $ before numbers , suffix to the instruction which defines the operand size :
+Q (quad-64bits)
+L(long-32bits)
+W(word-16bits)
+B(byte-8bits)
+-------------------------------------------------------------------------------------------
+push -> stores a value to the top of the stack causing the stack to be adjisted by -4 bytes (on 32-bit systems) : -0x04
+can be achived by 2 instructions :
+SUB ESP , 4
+MOVE [ESP] , 0XVALUE 
+---------------------------------------------------------------
+POP -> reads the value from the top of the stack , causing the stack to be adjusted +0x04
+The pop operation can also be done in several other instructions :
+MOV EAX,[ESP] ; STORE THE VALUE POINTED BY THE ESP INTO EAX , THE VALUE AT THE TOP OF THE STACK
+ADD ESP,4 ; ADD 4 TO ESP - ADJUST THE TOP OF THE STACK
+---------------------------------------------------------------------
+CALL instuction :
+Subroutines are implemented by using the CALL and RET instruction pair 
+The CALL instruction pushes the current instruction pointer EIP to the stack to jump to the funtion address specified . whenever the function executes the RET instruction , the last element is poped from the stack , and the CPU jumps to the address
