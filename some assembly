@@ -1,0 +1,9 @@
+Here’s a few more common Assembly instructions and syntax you’ll come across:
+
+ADD/SUB op1, op2 — add or subtract two operands, storing the result in the first operand. These can be registers, memory locations (limit of one) or constants. For example, ADD EAX, 10 means add 10 to the value of EAX and store the result in EAX
+XOR EAX, EAX — Performing an ‘exclusive or’ of a register with itself sets its value to zero; an easy way of clearing the contents of a register
+INC/DEC op1– increment or decrement the value of the operand by one
+CMP op1, op2 — compare the value of two operands (register/memory address/constant) and set the appropriate EFLAGS value.
+Jump (JMP) and conditional jump (je, jz, etc) — as the name implies these instructions allow you to jump to another location in the execution flow/instruction set. The JMP instruction simply jumps to a location whereas the conditional jumps (je, jz, etc) are taken only if certain criteria are met (using the EFLAGS register values mentioned earlier). For example, you might compare the values of two registers and jump to a location if they are both equal (uses je instruction and zero flag (zf) = 1).  
+When you see a value in brackets such as ADD DWORD PTR [X] or MOV eax, [ebx] it is referring to the value stored at memory address X.  In other words, EBX refers to the contents of EBX whereas [EBX] refers to the value stored at the memory address in EBX. 
+Relevant size keywords: BYTE = 1 byte, WORD = 2 bytes, DWORD = 4 bytes. 
