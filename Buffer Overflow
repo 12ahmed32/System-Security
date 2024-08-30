@@ -1,0 +1,16 @@
+The tem Buffer is loosely used to refer to any area in the memory where more than one piece of data is tored .
+an overflow occurs when we try to fill more data than the buffer can handle 
+one common place you can see this is either online in last name fields of a registration form :
+The field has 5 boxes , you try to write 7 boxes -> the 2 extra characters have to go somewhere 
+this is where a buffer overflow happens , which is a condition in a program where a function attempts to copy more data into a buffer than it can hold
+if you have allocated a specific amount of space in the stack , for example , 10 , and you exceed this by trying to copy more than 10 characters , then you have a buffer overflow
+suppose the computer allocates a buffer of 40 bytes (or pieces) of memory to store 10 intergers (4 bytes per integer) 
+an attacker sends the computer 11 integers (a total of 44 bytes ) as input 
+whatever was in the location after the ten 40 bytes (allocated for buffer ) gets overwritten with the 11th integer of input
+remember that the stack grows backward . therefore the data in the buffer are coppied from lowest memory addresses to highest memory addresses
+### if attack is successful it overwrite something in the memory -> buffer overflow 
+an attacker may be able to craft the input in a way that program executes specific code allowing the attacker to gain control of the program flow
+strcpy -> vulnerablo function as it doesn't check for bounds 
+strncpy -> safe version of the strcpy 
+
+
