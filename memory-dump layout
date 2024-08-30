@@ -1,0 +1,24 @@
+Kernel Land
+
+This portion of memory is reserved by the OS for device drivers, system cache, paged/non-paged pool, HAL, etc. There is no user access to this portion of memory. 
+
+EB and TEB(s)
+
+When you run a program/application, an instance of that executable known as a process is run.  Each process provides the resources necessary to run an instance of that program.  Every Windows process has an executive process (EPROCESS) structure that contains process attributes and pointers to related data structures.  While most of these EPROCESS structures reside in Kernel Land, the Process Environment Block (PEB) resides in user-accessible memory. The PEB contains various user-mode parameters about a running process. You can use WinDbg to easily examine the contents of the PEB by issuing the !peb command.  
+
+As you can see, the PEB includes information such as the base address of the image (executable), the location of the heap, the loaded modules (DLLs), and Environment variables (Operating system, relevant paths, etc). 
+A quick note about symbol files…it’s especially helpful to load the appropriate symbol files when debugging Windows applications as they provide useful, descriptive information for functions, variables, etc. You can do so within WinDbg by navigating to “File –> Symbol File Path…”. Follow the instructions found here: http://support.microsoft.com/kb/311503. You can also load symbol files in Immunity by navigating to “Debug –> Debugging Symbol Options”. 
+
+A  program, or process, can have one or more threads which serve as the basic unit to which the operating system allocates processor time. Each process begins with a single thread (primary thread) but can create additional threads as needed. All of the threads share the same virtual address space and system resources allocated to the parent process. Each thread also has its own resources including exception handlers, priorities, local storage, etc.  Just like each program/process has a PEB, each thread has a Thread Environment Block (TEB).  The TEB stores context information for the image loader and various Windows DLLs, as well as the location for the exception handler list (which we’ll cover in detail in a later post).  Like the PEB, the TEB resides in the process address space since user-mode components require writable access. 
+
+DLLs
+
+Windows programs take advantage of shared code libraries called Dynamic Link Libraries (DLLs) which allows for efficient code reuse and memory allocation.  These DLLs (also known as modules or executable modules) occupy a portion of the memory space. As shown in the Memory Map screenshot, you can view them in Immunity in the Memory view (Alt+M) or if you want to only view the DLLs you can select the Executable Module view (Alt+E).  There are OS/system modules (ntdll, user32, etc) as well as application-specific modules and the latter are often useful in crafting overflow exploits (covered in future posts).  
+Program Image
+
+The Program Image portion of memory is where the executable resides.  This includes the .text section (containing the executable code/CPU instructions) the .data section (containing the program’s global data) and the .rsrc section (contains non-executable resources, including  icons, images, and strings). 
+Heap
+
+The heap is the dynamically allocated (e.g. malloc( )) portion of memory a program uses to store global variables.  Unlike the stack, heap memory allocation must be managed by the application.  In other words, that memory will remain allocated until it is freed by the program or the program itself terminates. You can think of the heap as a shared pool of memory whereas the stack, which we’ll cover next, is more organized and compartmentalized.  I won’t go too much deeper to the heap just yet but plan to cover it in a later post on heap overflows. 
+The Stack
+Unlike the heap, where memory allocation for global variables is relative arbitrary and persistent, the stack is used to allocate short-term storage for local (function/method) variables in an ordered manner and that memory is subsequently freed at the termination of the given function.  Recall how a given process can have multiple threads.  Each thread/function is allocated its own stack frame.  The size of that stack frame is fixed after creation and the stack frame is deleted at the conclusion of the function.   
