@@ -1,0 +1,12 @@
+Part 1 
+1.Fuzzing the service parameter and getting crash byte
+2.Generating the pattern
+3.Finding the correct offset where the byte crashes with the help of EIP
+Part 2 
+1.Finding the bad character with mona.py and comparing the bad character strings with mona.py
+2.Finding return address (JMP ESP) with mona.py
+Part 3 
+1.Setting break point to verify RETURN address is correct or not
+2.Creating re3verse shell with the help of msfvenom
+3.Adding NOP's to the script
+4.Getting shell
