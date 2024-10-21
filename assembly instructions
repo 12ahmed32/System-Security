@@ -1,0 +1,173 @@
+Data moving instructions : 
+MOV -> copy the data from one address to another 
+abx : register [abx] : data in the register     registers contain the address of memory 
+LEA [load effective adderss ]-> used to put a memory address into the destination  CPU will not look up in memory it will just take the address in the register into another
+
+ 
+1.MOV 
+purpose : is used to move data between registers or between memory and registers
+usage : it transfers the actual value from the source to the destination
+
+2.LEA 
+purpose : load the address (not the value) of a memory location into a register 
+usage : typically used to compute addresses in complex addresssing modes or calculate offsets
+
+mov eax , dword ptr ds:[402000] : 
+moving the dword size data from the pointer to eax
+**to see data stored in a register or memory address use follow in dump in the debugger 
+lea eax , dowrd ptr ds:[402000] : 
+cpu will assign the address 402000 into eax not the dowrd inside it
+
+3.MOVZX zero extend :
+copies data from source to destination 
+but if the size of data transferred is smaller it will zero extend the value to 16 ,32 bits
+movZX eax,0x42 eax=00 00 00 42 
+* typically used when the source operand is unsigned , so it ignores any sign and pads remaining bits with zero .
+
+4.MOVSV sign extends
+copies the content of the source to the destination and sign extends the value to 16 or 32 bits
+movsx eax , 0x42 eax = FF FF FF 42
+
+* Typically used when the source operand is signed , so the upper bits are filled based on the sign ( 1 for negative values , 0 for positive ) will fill with Fs
+
+signed numbers vs. unsigned numbers 
+00 00 00 00 -> FF FF FF FF 
+can represent 4294967295 number [unsigned numbers ] 
+can represent signed number as 
+0 -> 2 billion 
+-2 billion -> 0 
+0 : 00 00 00 00
+1 : 01 00 00 00
+-1 = 0-1 : FF FF FF FF 
+-2 : FF FF FF FE 
+signed number we decrement until we have the greatest negative number witch is exactly at the middle 
+
+5.XCHG  
+exchanges the contents of the destination (first) and the source (second) operands 
+operands can be 2 registers or a register and memory location 
+exchg eax , eax -> debugger can represent this as NOP 
+
+
+6.PUSH & POP
+push -> decrements the stack pointer and then stores the source operand on the top of the stack 
+push 0  
+pop -> loads the value from the top of the stack to the location specified with the destination operand
+pop EAX (destination operand only)
+operands can be registers or memory locations
+stack pointer will point to the next bytes not deleting what has been poped 
+stack pointer is the ESP 
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+Arithmetic instructions
+ADD eax , 1 
+SUB eax , 1  
+add , sub , mov when operate on operands they don't affect the source 
+MUL 
+unsigned multiplication 
+mul source operand , destination operand always is AX [AH,AL] 
+problem is width change / size expansion 
+so the solve of this problem is a table intel made : 
+mul bl (8 bits) -> destination AL 8 bits -> result stored in AX 16 bits
+mul bx (16 bits) -> detination AX 16 bits -> result stored in AX 16 bits & DX  16 bits
+mul ebx (32 bits) -> destination EAX 32 bits -> result stored in EAX , EDX 
+DIV : 
+perform unsigned division 
+any division will result Quotient and reminder 
+div bl (any 8 bit divisor) -> CPU get the value in AX (16 bits) and divide on bl (8 bits) = 8 bit quotient and 8 bit reminder 
+div bx ( any 16 bit divisor ) -> CPU get the value in AX 16-bit & DX 16-bit and divide by the 16 bit divior = 16 bit quotient and 16 bit reminder 
+div EBX  -> cpu will get the value in EAX , EDX and devide by the 32 bit divisor = 32-bit quotient and 32-bit reminder 
+ 
+IMUL IDIV -> signed multiplication , devision 
+IMUL 3 operands forms :
+one operand form : imul source operand 
+two-operand form : imul destination operand , source operand 
+three-opreand from : imul destination operand , (source operand [register], source operand [immediate value])
+
+CMP : compare destination operand and source operand 
+sub operands source from destination and set the status flag zf , cf [don't change the destiation operand just setting the flags ] don't store the sub result in operand 
+ des > source zf 0 cf 0
+des = source zf 1 cf 0 
+des < source zf 0 cf 1 
+always followed by conditional (based on the status flag ) 
+conditional jump ---> Jcc
+conditional move ---> CMOVcc 
+conditional instruction ---> instruction 
+all these conditional things is branching witch could be used by malware to check if it running in vm or not , if there is debugger or not and so on contitional thigns
+so if you knew where is the conditional jump you can reverse it in the debugger like if it is je [jump if equal] make it jne [jump if not equal ] this called patching [changing in the assembly code of the malware or the executable in general ]
+----------------------------------------------------------------------------------------------------------------------------------------------------
+logical and bitwise 
+logical [and , or , xor ,  not ]
+shifting [shr , shl] 
+105 : 011010011 
+105 right shift 0 : 01101001
+105 right shift 1 : 00110100  --> by one digit 
+105 >> 2 : 00011010 --> by 2 digit 
+look shifting to right by one digit it is like dividing on 2 
+105 right rotation by 0 : 01101001
+105 right rotation by 1 : 10110100
+105 right rotation by 2 : 01011010 
+rotation [ror , rol]
+
+*** Bitmask : 
+a mask (bitmask) is data that used for bitwise operations to set multiple bits on or off (or to invert them ) in a single bitwise operation 
+or with one set a   bit on 
+and with zero set  a bit off
+----------------------------------------------------------------------------------------------------------------------------------------------------
+control transfer and branching 
+JMP ( unconditional jump ) will jump to operand which can be immediate value , register , memory location [ebx] CPU will look for data in this register and jump to its address and continue execution from there , perform jump without recording any return information 
+dead code -> code which will not have any chance to be executed as the flow will not execute it 
+important in malware analysis to ignore this dead code rather than wasting time and efforts
+
+branching : 
+JMPcc cc will replaced with each memonic 
+JZ 
+Ja
+Jb
+Jae
+Jg
+Jge
+Jle
+Jl
+Jbe
+Jnbe
+Jnb
+
+CALL : jump to target function , save information [return address] onto the stack 
+**when you find push then ret in assembly code then this is very suspicious as the ret will jump to the address you just pushed onto the stack 
+
+LOOP : perform loop operation using the ECX as a counter 
+
+String Operations : 
+MOVS -> MOVSB (BYTE) , MOVSW (WORD) , MOVSD (DWORD)    move a byte or word or dowrd from address in ESI to EDI then increment ESI and EDI with 1 , 2 , 4 depends on size it used
+SCAS -> SCASB SACSW SACSD scan string in address pointed by EDI and compare with AL or AX or EAX depend on size and if they are same ZF will be set then we can jump or any thing
+
+
+STOS -> STOSB STOSW STOSD witch can store a string in AL , AX , EAX into EDI 
+REP -> will repeat this instruction and decrement the ECX until it = 0 
+REPE -> will repeat until ZF set or ECX not zero 
+REPZ -> same as REPE
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+Miscellaneous instructions 
+NOP  -> does nothing  its opcode : 0x90  in malware can be padding or NOP sled before the payload or optimization purposes from compiler 
+CPUID -> return processor identifications and feature information and based on thee EXA value before this instruction will return different information [ very suspicious malware can use it to detect if it is running in VMware or emulated environment ]
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+Identifying C struct in assembly code : 
+Function calls 
+HEAP works as opposite of STACK so they don't meet 
+	EBP + any value -> this means these values are passed before the return address [EBP] meaning these are arguments for this function
+before we passed EBP onto stack means before stepping into the function 
+EBP used to distinguish between the arguments and local variables of function
+
+Prologue :  
+save EBP , use the EBP as new base for the new stack frame by making it point to the top of the current stack then make the top of current stack point to new address by subtracting the size needed
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+calling conventions : 
+they differ in -> the parameters are pushed onto the stack in right-to-left order or left-to-right order & stack cleanup ( callee or caller ) 
+1. stdcall -> win32 API -> right-to-left order -> callee clean up stack
+2. Linux programs -> cdecl -> right to left -:> caller
+3. fastcall -> 64-bit programs -> first 2 parameters into ECX and EDX remaining parameters right to left order -> callee 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+code construct : is a concept that defines a functional property but not the details of its implementation 
+10 or greater -> 9 less than or equal -> compiler can generate a different way of our code 
